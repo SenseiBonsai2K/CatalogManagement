@@ -14,8 +14,12 @@ namespace CatalogManagement.Models.Configurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(u => u.Id);
+            builder.Property(u => u.Id).ValueGeneratedOnAdd();
+
             builder.Property(u => u.Username).IsRequired().HasMaxLength(20);
+
             builder.Property(u => u.Email).IsRequired().HasMaxLength(50);
+
             builder.Property(u => u.Password).IsRequired().HasMaxLength(30);
         }
     }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CatalogManagement.Models.Repositories
 {
-    public class CategoryRepository : GeneralRepository<Apparel>
+    public class CategoryRepository : GeneralRepository<Category>
     {
         public CategoryRepository(MyDbContext _context) : base(_context) { }
     }

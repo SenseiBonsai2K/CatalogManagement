@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using CatalogManagement.Models.Entities;
 using CatalogManagement.Models.Repositories;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,16 @@ namespace Application.Services
                 categories.Add(new CategoryDTO(category));
             }
             return categories;
+        }
+
+        public async Task AddCategory(Category category)
+        {
+            if (await _categoryRepository.CategoryExistsByName(category.Name))
+            {
+                throw new InvalidOperationException("A CATEGORY with the SAME NAME already exists.");
+            }
+            await _categoryRepository.AddAsync(category);
+            await _categoryRepository.SaveAsync();
         }
     }
 }

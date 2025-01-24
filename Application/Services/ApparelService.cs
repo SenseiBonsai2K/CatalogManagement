@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using CatalogManagement.Models.Entities;
 using CatalogManagement.Models.Repositories;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,16 @@ namespace Application.Services
                 apparels.Add(new ApparelDTO(apparel));
             }
             return apparels;
+        }
+
+        public async Task AddApparel(Apparel apparel)
+        {
+            if (await _apparelRepository.ApparelExistsByName(apparel.Name))
+            {
+                throw new InvalidOperationException("An APPAREL with the SAME NAME already exists.");
+            }
+            await _apparelRepository.AddAsync(apparel);
+            await _apparelRepository.SaveAsync();
         }
     }
 }

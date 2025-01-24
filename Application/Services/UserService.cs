@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using CatalogManagement.Models.Entities;
 using CatalogManagement.Models.Repositories;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,20 @@ namespace Application.Services
                 users.Add(new UserDTO(user));
             }
             return users;
+        }
+
+        public async Task AddUser(User user)
+        {
+            if (await _userRepository.UserExistsByEmail(user.Email))
+            {
+                throw new InvalidOperationException("This EMAIL is ALREADY in USE.");
+            }
+            if (await _userRepository.UserExistsByUsername(user.Username))
+            {
+                throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
+            }
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveAsync();
         }
     }
 }

@@ -18,5 +18,10 @@ namespace CatalogManagement.Models.Repositories
         {
             return await _context.Apparels.AnyAsync(c => c.Name == name);
         }
+
+        public async Task<IEnumerable<Apparel>> GetApparelsByCategoryId(int id)
+        {
+            return await _context.Apparels.Where(a => a.Category.Id == id).ToListAsync();
+        }
     }
 }

@@ -28,6 +28,12 @@ namespace Application.Services
             return users;
         }
 
+        public async Task<UserDTO> GetUserById(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            return new UserDTO(user);
+        }
+
         public async Task AddUser(User user)
         {
             if (await _userRepository.UserExistsByEmail(user.Email))
@@ -39,6 +45,12 @@ namespace Application.Services
                 throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
             }
             await _userRepository.AddAsync(user);
+            await _userRepository.SaveAsync();
+        }
+
+        public async Task DeleteUser(int id)
+        {
+            await _userRepository.DeleteAsync(id);
             await _userRepository.SaveAsync();
         }
     }

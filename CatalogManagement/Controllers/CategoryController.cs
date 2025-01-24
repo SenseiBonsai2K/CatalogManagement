@@ -37,5 +37,20 @@ namespace CatalogManagement.Controllers
             }
             return Ok(category.Name + " Added");
         }
+
+        [HttpDelete("DeleteCategory")]
+        public async Task<ActionResult> DeleteCategory([FromQuery] int id)
+        {
+            var category = await categoryService.GetCategoryById(id);
+            try
+            {
+                await categoryService.DeleteCategory(id);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok("Category " + category.Name + " Deleted");
+        }
     }
 }

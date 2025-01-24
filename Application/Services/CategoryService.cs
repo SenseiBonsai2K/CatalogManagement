@@ -12,10 +12,12 @@ namespace Application.Services
     public class CategoryService
     {
         public readonly CategoryRepository _categoryRepository;
+        public readonly ApparelRepository _apparelRepository;
 
-        public CategoryService(CategoryRepository categoryRepository)
+        public CategoryService(CategoryRepository categoryRepository, ApparelRepository apparelRepository)
         {
             this._categoryRepository = categoryRepository;
+            _apparelRepository = apparelRepository;
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetCategories()
@@ -28,6 +30,12 @@ namespace Application.Services
             return categories;
         }
 
+        public async Task<CategoryDTO> GetCategoryById(int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            return new CategoryDTO(category);
+        }
+
         public async Task AddCategory(Category category)
         {
             if (await _categoryRepository.CategoryExistsByName(category.Name))
@@ -35,6 +43,18 @@ namespace Application.Services
                 throw new InvalidOperationException("A CATEGORY with the SAME NAME already exists.");
             }
             await _categoryRepository.AddAsync(category);
+            await _categoryRepository.SaveAsync();
+        }
+
+        public async Task DeleteCategory(int id)
+        {
+            var apparels = await _apparelRepository.GetApparelsByCategoryId(id);
+            var category = await _categoryRepository.GetByIdAsync(id);
+            if (apparels.Any())
+            {
+                throw new InvalidOperationException("CATEGORY is in USE in one or more apparel");
+            }
+            await _categoryRepository.DeleteAsync(category.Id);
             await _categoryRepository.SaveAsync();
         }
     }

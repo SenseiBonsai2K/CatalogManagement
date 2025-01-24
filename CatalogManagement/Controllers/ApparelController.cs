@@ -37,5 +37,20 @@ namespace CatalogManagement.Controllers
             }
             return Ok(apparel.Name + " Added");
         }
+
+        [HttpDelete("DeleteApparel")]
+        public async Task<ActionResult> DeleteApparel([FromQuery] int id)
+        {
+            var apparel = await _apparelService.GetApparelById(id);
+            try
+            {
+                await _apparelService.DeleteApparel(id);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok("Apparel " + apparel.Name + " Deleted");
+        }
     }
 }

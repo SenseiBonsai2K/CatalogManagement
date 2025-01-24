@@ -28,6 +28,12 @@ namespace Application.Services
             return apparels;
         }
 
+        public async Task<ApparelDTO> GetApparelById(int id)
+        {
+            var apparel = await _apparelRepository.GetByIdAsync(id);
+            return new ApparelDTO(apparel);
+        }
+
         public async Task AddApparel(Apparel apparel)
         {
             if (await _apparelRepository.ApparelExistsByName(apparel.Name))
@@ -35,6 +41,12 @@ namespace Application.Services
                 throw new InvalidOperationException("An APPAREL with the SAME NAME already exists.");
             }
             await _apparelRepository.AddAsync(apparel);
+            await _apparelRepository.SaveAsync();
+        }
+
+        public async Task DeleteApparel(int id)
+        {
+            await _apparelRepository.DeleteAsync(id);
             await _apparelRepository.SaveAsync();
         }
     }

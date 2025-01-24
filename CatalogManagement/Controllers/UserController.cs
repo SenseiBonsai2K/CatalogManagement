@@ -38,5 +38,20 @@ namespace CatalogManagement.Controllers
             }
             return Ok("Account " + user.Username + " Registered");
         }
+
+        [HttpDelete("DeleteUser")]
+        public async Task<ActionResult> DeleteUser([FromQuery] int id)
+        {
+            var user = await _userService.GetUserById(id);
+            try
+            {
+                await _userService.DeleteUser(id);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok("Account " + user.Username + " Deleted");
+        }
     }
 }

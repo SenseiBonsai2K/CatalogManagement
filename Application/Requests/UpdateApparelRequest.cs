@@ -8,5 +8,7 @@ namespace Application.Requests
 {
     public class UpdateApparelRequest
     {
+        public int Id { get; set; }
+        public AddApparelRequest AddApparelRequest { get; set; }
     }
 }

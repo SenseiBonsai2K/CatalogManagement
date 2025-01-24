@@ -78,5 +78,13 @@ namespace Application.Services
             await _categoryRepository.UpdateAsync(categoryToUpdate);
             await _categoryRepository.SaveAsync();
         }
+
+        public async Task AddApparelToCategory(int categoryId, int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
+            var apparel = await _apparelRepository.GetByIdAsync(id);
+            category.Apparels.Add(apparel);
+            await _categoryRepository.SaveAsync();
+        }
     }
 }

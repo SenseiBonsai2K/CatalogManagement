@@ -10,10 +10,12 @@ namespace CatalogManagement.Controllers
     public class ApparelController : Controller
     {
         public readonly ApparelService _apparelService;
+        public readonly CategoryService _categoryService;
 
-        public ApparelController(ApparelService apparelService)
+        public ApparelController(ApparelService apparelService, CategoryService categoryService)
         {
             this._apparelService = apparelService;
+            _categoryService = categoryService;
         }
 
         [HttpGet("GetApparels")]
@@ -51,6 +53,22 @@ namespace CatalogManagement.Controllers
                 return BadRequest(e.Message);
             }
             return Ok("Apparel " + apparel.Name + " Deleted");
+        }
+
+        [HttpPut("UpdateApparel")]
+        public async Task<ActionResult> UpdateApparel([FromBody] UpdateApparelRequest updateApparelRequest)
+        {
+            var newApparel = updateApparelRequest.AddApparelRequest.ToEntity();
+            try
+            {
+                await _apparelService.UpdateApparel(updateApparelRequest.Id, newApparel);
+                await _categoryService.AddApparelToCategory(newApparel.CategoryId, updateApparelRequest.Id);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok("Apparel " + newApparel.Name + " Updated");
         }
     }
 }

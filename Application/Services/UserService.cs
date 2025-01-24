@@ -63,23 +63,14 @@ namespace Application.Services
                 throw new InvalidOperationException("USER NOT FOUND.");
             }
 
-            if (userToUpdate.Username != user.Username)
+            if (userToUpdate.Username != user.Username && await _userRepository.UserExistsByUsername(user.Username))
             {
-                var existingUser = await _userRepository.GetUserByUsername(user.Username);
-                if(existingUser != null)
-                {
-                    throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
-                }
+                throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
             }
 
-            if(userToUpdate.Email != user.Email)
+            if(userToUpdate.Email != user.Email && await _userRepository.UserExistsByEmail(user.Email))
             {
-                var existingUser = await _userRepository.GetUserByEmail(user.Email);
-                if (existingUser != null)
-                {
-                    throw new InvalidOperationException("This EMAIL is ALREADY in USE.");
-                }
-
+                throw new InvalidOperationException("This EMAIL is ALREADY in USE.");
             }
 
             userToUpdate.Username = user.Username;

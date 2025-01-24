@@ -52,5 +52,20 @@ namespace CatalogManagement.Controllers
             }
             return Ok("Category " + category.Name + " Deleted");
         }
+
+        [HttpPut("UpdateCategory")]
+        public async Task<ActionResult> UpdateCategory([FromBody] UpdateCategoryRequest updateCategoryRequest)
+        {
+            var newCategory = updateCategoryRequest.AddCategoryRequest.ToEntity();
+            try
+            {
+                await categoryService.UpdateCategory(updateCategoryRequest.Id, newCategory);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok(newCategory.Name + " Updated");
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Application.Services
 {
@@ -55,6 +56,18 @@ namespace Application.Services
                 throw new InvalidOperationException("CATEGORY is in USE in one or more apparel");
             }
             await _categoryRepository.DeleteAsync(category.Id);
+            await _categoryRepository.SaveAsync();
+        }
+
+        public async Task UpdateCategory(int id, Category category)
+        {
+            var categoryToUpdate = await _categoryRepository.GetByIdAsync(id);
+            if (await _categoryRepository.CategoryExistsByName(category.Name))
+            {
+                throw new InvalidOperationException("A CATEGORY with the SAME NAME already exists.");
+            }
+            categoryToUpdate.Name = category.Name;
+            await _categoryRepository.UpdateAsync(categoryToUpdate);
             await _categoryRepository.SaveAsync();
         }
     }

@@ -62,11 +62,19 @@ namespace Application.Services
         public async Task UpdateCategory(int id, Category category)
         {
             var categoryToUpdate = await _categoryRepository.GetByIdAsync(id);
+            
+            if (categoryToUpdate == null)
+            {
+                throw new InvalidOperationException("CATEGORY NOT FOUND");
+            }
+
             if (await _categoryRepository.CategoryExistsByName(category.Name))
             {
                 throw new InvalidOperationException("A CATEGORY with the SAME NAME already exists.");
             }
+
             categoryToUpdate.Name = category.Name;
+
             await _categoryRepository.UpdateAsync(categoryToUpdate);
             await _categoryRepository.SaveAsync();
         }

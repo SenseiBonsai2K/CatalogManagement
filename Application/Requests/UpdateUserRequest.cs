@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.Requests
 {
-    public class UpdateuserRequest
+    public class UpdateUserRequest
     {
+        public int Id { get; set; }
+
+        public AddUserRequest AddUserRequest { get; set; }
     }
 }

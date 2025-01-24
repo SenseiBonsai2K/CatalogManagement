@@ -53,5 +53,41 @@ namespace Application.Services
             await _userRepository.DeleteAsync(id);
             await _userRepository.SaveAsync();
         }
+
+        public async Task UpdateUser(int id, User user)
+        {
+            var userToUpdate = await _userRepository.GetByIdAsync(id);
+
+            if(userToUpdate == null)
+            {
+                throw new InvalidOperationException("USER NOT FOUND.");
+            }
+
+            if (userToUpdate.Username != user.Username)
+            {
+                var existingUser = await _userRepository.GetUserByUsername(user.Username);
+                if(existingUser != null)
+                {
+                    throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
+                }
+            }
+
+            if(userToUpdate.Email != user.Email)
+            {
+                var existingUser = await _userRepository.GetUserByEmail(user.Email);
+                if (existingUser != null)
+                {
+                    throw new InvalidOperationException("This EMAIL is ALREADY in USE.");
+                }
+
+            }
+
+            userToUpdate.Username = user.Username;
+            userToUpdate.Email = user.Email;
+            userToUpdate.Password = user.Password;
+
+            await _userRepository.UpdateAsync(userToUpdate);
+            await _userRepository.SaveAsync();
+        }
     }
 }

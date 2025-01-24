@@ -53,5 +53,20 @@ namespace CatalogManagement.Controllers
             }
             return Ok("Account " + user.Username + " Deleted");
         }
+
+        [HttpPut("UpdateUser")]
+        public async Task<ActionResult> UpdateUser([FromBody] UpdateUserRequest updateUserRequest)
+        {
+            var newUser = updateUserRequest.AddUserRequest.ToEntity();
+            try
+            {
+                await _userService.UpdateUser(updateUserRequest.Id, newUser);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok("Account " + newUser.Username + " Updated");
+        }
     }
 }

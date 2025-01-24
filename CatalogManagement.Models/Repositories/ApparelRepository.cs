@@ -23,5 +23,10 @@ namespace CatalogManagement.Models.Repositories
         {
             return await _context.Apparels.Where(a => a.Category.Id == id).ToListAsync();
         }
+
+        public async Task<IEnumerable<Apparel>> GetApparelsByName(string name)
+        {
+            return await _context.Apparels.Where(a => a.Name.Contains(name)).ToListAsync();
+        }
     }
 }

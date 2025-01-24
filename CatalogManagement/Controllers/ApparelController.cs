@@ -25,6 +25,14 @@ namespace CatalogManagement.Controllers
             return Ok(apparels);
         }
 
+        [HttpGet("GetApparelsByName")]
+        public async Task<ActionResult<IEnumerable<ApparelDTO>>> GetApparelsByName([FromQuery] string name)
+        {
+            var apparels = await _apparelService.GetApparelsByName(name);
+            return Ok(apparels);
+        }
+
+
         [HttpPost("AddApparel")]
         public async Task<ActionResult> AddApparel([FromBody] AddApparelRequest addApparelRequest)
         {

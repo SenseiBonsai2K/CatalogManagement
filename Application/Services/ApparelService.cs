@@ -72,5 +72,15 @@ namespace Application.Services
             await _apparelRepository.UpdateAsync(apparelToUpdate);
             await _apparelRepository.SaveAsync();
         }
+
+        public async Task<IEnumerable<ApparelDTO>> GetApparelsByName(string name)
+        {
+            var apparels = new List<ApparelDTO>();
+            foreach (var apparel in await _apparelRepository.GetApparelsByName(name))
+            {
+                apparels.Add(new ApparelDTO(apparel));
+            }
+            return apparels;
+        }
     }
 }

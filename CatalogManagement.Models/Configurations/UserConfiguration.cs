@@ -20,7 +20,7 @@ namespace CatalogManagement.Models.Configurations
 
             builder.Property(u => u.Email).IsRequired().HasMaxLength(50);
 
-            builder.Property(u => u.Password).IsRequired().HasMaxLength(30);
+            builder.Property(u => u.Password).IsRequired().HasMaxLength(200);
         }
     }
 }

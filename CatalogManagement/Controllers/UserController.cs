@@ -68,5 +68,16 @@ namespace CatalogManagement.Controllers
             }
             return Ok("Account " + newUser.Username + " Updated");
         }
+
+        [HttpPost("Login")]
+        public async Task<ActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            var user = await _userService.VerifyCredentials(loginRequest.Email, loginRequest.Password);
+            if (user == null)
+            {
+                return BadRequest("Invalid Credentials");
+            }
+            return Ok(user);
+        }
     }
 }

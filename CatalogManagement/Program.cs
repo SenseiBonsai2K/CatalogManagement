@@ -18,6 +18,7 @@ builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ApparelService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PasswordService>();
 
 builder.Services.AddControllers();
 

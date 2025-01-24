@@ -12,10 +12,12 @@ namespace Application.Services
     public class UserService
     {
         public readonly UserRepository _userRepository;
+        public readonly PasswordService passwordService;
 
-        public UserService(UserRepository userRepository)
+        public UserService(UserRepository userRepository, PasswordService passwordService)
         {
             this._userRepository = userRepository;
+            this.passwordService = passwordService;
         }
 
         public async Task<IEnumerable<UserDTO>> GetUsers()
@@ -44,6 +46,7 @@ namespace Application.Services
             {
                 throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
             }
+            user.Password = passwordService.HashPassword(user.Password);
             await _userRepository.AddAsync(user);
             await _userRepository.SaveAsync();
         }
@@ -58,7 +61,7 @@ namespace Application.Services
         {
             var userToUpdate = await _userRepository.GetByIdAsync(id);
 
-            if(userToUpdate == null)
+            if (userToUpdate == null)
             {
                 throw new InvalidOperationException("USER NOT FOUND.");
             }
@@ -68,9 +71,14 @@ namespace Application.Services
                 throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
             }
 
-            if(userToUpdate.Email != user.Email && await _userRepository.UserExistsByEmail(user.Email))
+            if (userToUpdate.Email != user.Email && await _userRepository.UserExistsByEmail(user.Email))
             {
                 throw new InvalidOperationException("This EMAIL is ALREADY in USE.");
+            }
+
+            if (userToUpdate.Password != user.Password)
+            {
+                user.Password = passwordService.HashPassword(user.Password);
             }
 
             userToUpdate.Username = user.Username;
@@ -79,6 +87,16 @@ namespace Application.Services
 
             await _userRepository.UpdateAsync(userToUpdate);
             await _userRepository.SaveAsync();
+        }
+
+        public async Task<User> VerifyCredentials(string email, string password)
+        {
+            var user = await _userRepository.GetUserByEmail(email);
+            if (user == null || !passwordService.VerifyPassword(password, user.Password))
+            {
+                throw new InvalidOperationException("INVALID CREDENTIALS");
+            }
+            return user;
         }
     }
 }

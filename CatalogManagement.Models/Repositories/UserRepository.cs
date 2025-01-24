@@ -19,5 +19,10 @@ namespace CatalogManagement.Models.Repositories
         {
             return await _context.Users.AnyAsync(c => c.Email == email);
         }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(c => c.Email == email);
+        }
     }
 }

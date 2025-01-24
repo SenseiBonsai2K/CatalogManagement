@@ -1,6 +1,6 @@
 ﻿using CatalogManagement.Models.Entities;
 
-namespace CatalogManagement.DTOs
+namespace Application.DTOs
 {
     public class CategoryDTO
     {

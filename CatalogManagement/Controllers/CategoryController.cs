@@ -1,6 +1,5 @@
-﻿using CatalogManagement.DTOs;
-using CatalogManagement.Models.Entities;
-using CatalogManagement.Models.Repositories;
+﻿using Application.DTOs;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogManagement.Controllers
@@ -9,20 +8,17 @@ namespace CatalogManagement.Controllers
     [ApiController]
     public class CategoryController : Controller
     {
-        private readonly CategoryRepository _categoryRepository;
-        public CategoryController(CategoryRepository categoryRepository) 
+        public  readonly CategoryService categoryService;
+
+        public CategoryController(CategoryService categoryService) 
         {
-            this._categoryRepository = categoryRepository;
+            this.categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
         {
-            var categories = new List<CategoryDTO>();
-            foreach (var category in await _categoryRepository.GetAllAsync())
-            {
-                categories.Add(new CategoryDTO(category));
-            }
+            var categories = await categoryService.GetCategories();
             return Ok(categories);
         }
     }

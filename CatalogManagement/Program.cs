@@ -1,3 +1,4 @@
+using Application.Services;
 using CatalogManagement.Models.Repositories;
 using MenuManager.Models.Context;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,11 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<ApparelRepository>();
 builder.Services.AddScoped<CategoryRepository>();
+
+// Add services
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ApparelService>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddControllers();
 

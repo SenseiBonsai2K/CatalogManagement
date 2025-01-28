@@ -3,6 +3,7 @@ using Application.Requests;
 using Application.Services;
 using CatalogManagement.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Web.Helpers;
 
 namespace CatalogManagement.Controllers
 {
@@ -36,7 +37,7 @@ namespace CatalogManagement.Controllers
             {
                 return BadRequest(e.Message);
             }
-            return Ok("Account " + user.Username + " Registered");
+            return Ok(new { message = "Account " + user.Username + " Registered" });
         }
 
         [HttpDelete("DeleteUser")]
@@ -77,7 +78,7 @@ namespace CatalogManagement.Controllers
             {
                 return BadRequest("Invalid Credentials");
             }
-            return Ok(user);
+            return Ok(new { message = "Account " + user.Username + " Logged" });
         }
     }
 }

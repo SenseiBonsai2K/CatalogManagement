@@ -34,6 +34,16 @@ namespace Application.Services
             return new ApparelDTO(apparel);
         }
 
+        public async Task<IEnumerable<ApparelDTO>> GetApparelsByCategoryName(string name)
+        {
+            var apparels = new List<ApparelDTO>();
+            foreach (var apparel in await _apparelRepository.GetApparelsByCategoryName(name))
+            {
+                apparels.Add(new ApparelDTO(apparel));
+            }
+            return apparels;
+        }
+
         public async Task AddApparel(Apparel apparel)
         {
             if (await _apparelRepository.ApparelExistsByName(apparel.Name))
@@ -65,6 +75,10 @@ namespace Application.Services
             }
 
             apparelToUpdate.Name = apparel.Name;
+            apparelToUpdate.ImageUrl = apparel.ImageUrl;
+            apparelToUpdate.Size = apparel.Size;
+            apparelToUpdate.Material = apparel.Material;
+            apparelToUpdate.Brand = apparel.Brand;
             apparelToUpdate.Description = apparel.Description;
             apparelToUpdate.Price = apparel.Price;
             apparelToUpdate.Category = apparel.Category;

@@ -25,10 +25,28 @@ namespace CatalogManagement.Controllers
             return Ok(apparels);
         }
 
-        [HttpGet("GetApparelsByName")]
-        public async Task<ActionResult<IEnumerable<ApparelDTO>>> GetApparelsByName([FromQuery] string name)
+        [HttpGet("GetApparelsByName/{name}")]
+        public async Task<ActionResult<IEnumerable<ApparelDTO>>> GetApparelsByName(string name)
         {
             var apparels = await _apparelService.GetApparelsByName(name);
+            return Ok(apparels);
+        }
+
+        [HttpGet("GetApparelById/{id}")]
+        public async Task<ActionResult<ApparelDTO>> GetApparelById(int id)
+        {
+            if (await _apparelService.GetApparelById(id) == null)
+            {
+                return NotFound("Apparel Not Found");
+            }
+            var apparel = await _apparelService.GetApparelById(id);
+            return Ok(apparel);
+        }
+
+        [HttpGet("GetApparelsByCategoryName/{name}")]
+        public async Task<ActionResult<IEnumerable<ApparelDTO>>> GetApparelsByCategoryName(string name)
+        {
+            var apparels = await _apparelService.GetApparelsByCategoryName(name);
             return Ok(apparels);
         }
 

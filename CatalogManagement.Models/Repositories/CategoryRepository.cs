@@ -18,6 +18,5 @@ namespace CatalogManagement.Models.Repositories
         {
             return await _context.Categories.AnyAsync(c => c.Name == name);
         }
-
     }
 }

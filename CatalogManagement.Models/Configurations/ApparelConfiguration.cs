@@ -20,7 +20,7 @@ namespace CatalogManagement.Models.Configurations
 
             builder.Property(a => a.Description).HasMaxLength(300);
 
-            builder.Property(a => a.ImageUrl).HasMaxLength(200);
+            builder.Property(a => a.ImageUrl).HasMaxLength(600);
 
             builder.Property(a => a.Size).HasMaxLength(10);
 

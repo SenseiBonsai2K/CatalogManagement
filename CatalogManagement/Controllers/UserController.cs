@@ -12,10 +12,12 @@ namespace CatalogManagement.Controllers
     public class UserController : Controller
     {
         public readonly UserService _userService;
+        public readonly TokenService TokenService;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, TokenService tokenService)
         {
             this._userService = userService;
+            TokenService = tokenService;
         }
 
         [HttpGet("GetUsers")]
@@ -58,7 +60,7 @@ namespace CatalogManagement.Controllers
         [HttpPut("UpdateUser")]
         public async Task<ActionResult> UpdateUser([FromBody] UpdateUserRequest updateUserRequest)
         {
-            var newUser = updateUserRequest.AddUserRequest.ToEntity();
+            var newUser = updateUserRequest.ToEntity();
             try
             {
                 await _userService.UpdateUser(updateUserRequest.Id, newUser);
@@ -78,7 +80,17 @@ namespace CatalogManagement.Controllers
             {
                 return BadRequest("Invalid Credentials");
             }
-            return Ok(new { message = "Account " + user.Username + " Logged" });
+
+            CreateTokenRequest createTokenRequest = new CreateTokenRequest
+            {
+                Id = user.Id.ToString(),
+                Username = user.Username,
+                Email = user.Email
+            };
+
+            var token = await TokenService.CreateToken(createTokenRequest);
+
+            return Ok(new { message = "Account " + user.Username + " Logged with token: " + token});
         }
     }
 }

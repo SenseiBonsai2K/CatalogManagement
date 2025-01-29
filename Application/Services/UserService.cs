@@ -1,4 +1,6 @@
 ﻿using Application.DTOs;
+using Application.Requests;
+using Azure.Core;
 using CatalogManagement.Models.Entities;
 using CatalogManagement.Models.Repositories;
 using System;
@@ -6,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CatalogManagement.Models.Entities.User;
 
 namespace Application.Services
 {
@@ -47,6 +50,7 @@ namespace Application.Services
                 throw new InvalidOperationException("This USERNAME is ALREADY TAKEN.");
             }
             user.Password = passwordService.HashPassword(user.Password);
+            user.Role = UserRole.User;
             await _userRepository.AddAsync(user);
             await _userRepository.SaveAsync();
         }
@@ -83,6 +87,7 @@ namespace Application.Services
 
             userToUpdate.Username = user.Username;
             userToUpdate.Email = user.Email;
+            userToUpdate.Role = user.Role;
             userToUpdate.Password = user.Password;
 
             await _userRepository.UpdateAsync(userToUpdate);

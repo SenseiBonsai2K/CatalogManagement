@@ -21,6 +21,8 @@ namespace CatalogManagement.Models.Configurations
             builder.Property(u => u.Email).IsRequired().HasMaxLength(50);
 
             builder.Property(u => u.Password).IsRequired().HasMaxLength(200);
+
+            builder.Property(u => u.Role).IsRequired().HasMaxLength(20);
         }
     }
 }

@@ -19,7 +19,8 @@ namespace Application.Requests
             {
                 Username = this.UserName,
                 Email = this.Email,
-                Password = this.Password
+                Password = this.Password,
+                Role = User.UserRole.User
             };
         }
     }

@@ -13,6 +13,7 @@ namespace Application.DTOs
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public User.UserRole Role { get; set; }
 
         public UserDTO(User user)
         {
@@ -20,6 +21,7 @@ namespace Application.DTOs
             this.Username = user.Username;
             this.Email = user.Email;
             this.Password = user.Password;
+            this.Role = user.Role;
         }
     }
 }

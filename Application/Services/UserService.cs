@@ -41,6 +41,8 @@ namespace Application.Services
 
         public async Task AddUser(User user)
         {
+            ValidateIfInputNotNull(user);
+
             if (await _userRepository.UserExistsByEmail(user.Email))
             {
                 throw new InvalidOperationException("This EMAIL is ALREADY in USE.");
@@ -85,10 +87,9 @@ namespace Application.Services
                 user.Password = passwordService.HashPassword(user.Password);
             }
 
-            userToUpdate.Username = user.Username;
-            userToUpdate.Email = user.Email;
-            userToUpdate.Role = user.Role;
-            userToUpdate.Password = user.Password;
+            userToUpdate.Username = !string.IsNullOrEmpty(user.Username) ? user.Username : userToUpdate.Username;
+            userToUpdate.Email = !string.IsNullOrEmpty(user.Email) ? user.Email : userToUpdate.Email;
+            userToUpdate.Password = !string.IsNullOrEmpty(user.Password) ? passwordService.HashPassword(user.Password) : userToUpdate.Password;
 
             await _userRepository.UpdateAsync(userToUpdate);
             await _userRepository.SaveAsync();
@@ -102,6 +103,14 @@ namespace Application.Services
                 throw new InvalidOperationException("INVALID CREDENTIALS");
             }
             return user;
+        }
+
+        private void ValidateIfInputNotNull(User user)
+        {
+            if (user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Email))
+            {
+                throw new InvalidOperationException("Please fill in all the fields.");
+            }
         }
     }
 }

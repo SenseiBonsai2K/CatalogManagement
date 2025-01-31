@@ -39,6 +39,8 @@ namespace Application.Services
 
         public async Task AddCategory(Category category)
         {
+            ValidateIfInputNotNull(category);
+
             if (await _categoryRepository.CategoryExistsByName(category.Name))
             {
                 throw new InvalidOperationException("A CATEGORY with the SAME NAME already exists.");
@@ -61,6 +63,8 @@ namespace Application.Services
 
         public async Task UpdateCategory(int id, Category category)
         {
+            ValidateIfInputNotNull(category);
+
             var categoryToUpdate = await _categoryRepository.GetByIdAsync(id);
             
             if (categoryToUpdate == null)
@@ -73,7 +77,7 @@ namespace Application.Services
                 throw new InvalidOperationException("A CATEGORY with the SAME NAME already exists.");
             }
 
-            categoryToUpdate.Name = category.Name;
+            categoryToUpdate.Name = !string.IsNullOrEmpty(category.Name) ? category.Name : categoryToUpdate.Name;
 
             await _categoryRepository.UpdateAsync(categoryToUpdate);
             await _categoryRepository.SaveAsync();
@@ -85,6 +89,14 @@ namespace Application.Services
             var apparel = await _apparelRepository.GetByIdAsync(id);
             category.Apparels.Add(apparel);
             await _categoryRepository.SaveAsync();
+        }
+
+        public void ValidateIfInputNotNull(Category category)
+        {
+            if (category == null || string.IsNullOrEmpty(category.Name))
+            {
+                throw new InvalidOperationException("Please fill in all the fields.");
+            }
         }
     }
 }

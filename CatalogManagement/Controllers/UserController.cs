@@ -1,9 +1,9 @@
 ﻿using Application.DTOs;
 using Application.Requests;
 using Application.Services;
-using CatalogManagement.Models.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Helpers;
 
 namespace CatalogManagement.Controllers
 {
@@ -12,12 +12,12 @@ namespace CatalogManagement.Controllers
     public class UserController : Controller
     {
         public readonly UserService _userService;
-        public readonly TokenService TokenService;
+        public readonly JwtService JwtService;
 
-        public UserController(UserService userService, TokenService tokenService)
+        public UserController(UserService userService, JwtService tokenService)
         {
             this._userService = userService;
-            TokenService = tokenService;
+            JwtService = tokenService;
         }
 
         [HttpGet("GetUsers")]
@@ -58,9 +58,10 @@ namespace CatalogManagement.Controllers
         }
 
         [HttpPut("UpdateUser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> UpdateUser([FromBody] UpdateUserRequest updateUserRequest)
         {
-            var newUser = updateUserRequest.ToEntity();
+            var newUser = updateUserRequest.AddUserRequest.ToEntity();
             try
             {
                 await _userService.UpdateUser(updateUserRequest.Id, newUser);
@@ -88,9 +89,9 @@ namespace CatalogManagement.Controllers
                 Email = user.Email
             };
 
-            var token = await TokenService.CreateToken(createTokenRequest);
+            var token = await JwtService.CreateToken(createTokenRequest);
 
-            return Ok(new { message = "Account " + user.Username + " Logged with token: " + token});
+            return Ok(new {token});
         }
     }
 }

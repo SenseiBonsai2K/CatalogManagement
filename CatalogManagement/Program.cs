@@ -24,31 +24,32 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ApparelService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<PasswordService>();
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<JwtService>();
 
-var jwtAuthenticationOption = new Jwt();
-builder.Configuration.GetSection("Jwt").Bind(jwtAuthenticationOption);
+var jwtSettings = builder.Configuration.GetSection("Jwt").Get<Jwt>();
+builder.Services.AddSingleton(jwtSettings);
 
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-                .AddJwtBearer(options => {
-                    string key = jwtAuthenticationOption.Key;
-                    var securityKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(key)
-                        );
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidateLifetime = true,
-                        ValidateAudience = false,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtAuthenticationOption.Issuer,
-                        IssuerSigningKey = securityKey
-                    };
-                });
+}).AddJwtBearer(options => 
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+        }; 
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.Configure<Jwt>(builder.Configuration.GetSection("Jwt"));
 
@@ -79,6 +80,7 @@ if (app.Environment.IsDevelopment())
 // Use CORS policy
 app.UseCors("AllowSpecificOrigin");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

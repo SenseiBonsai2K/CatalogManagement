@@ -1,12 +1,15 @@
 ﻿using Application.DTOs;
 using Application.Requests;
 using Application.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CatalogManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ApparelController : Controller
     {
         public readonly ApparelService _apparelService;
@@ -19,6 +22,7 @@ namespace CatalogManagement.Controllers
         }
 
         [HttpGet("GetApparels")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ApparelDTO>>> GetApparels()
         {
             var apparels = await _apparelService.GetApparels();
@@ -26,6 +30,7 @@ namespace CatalogManagement.Controllers
         }
 
         [HttpGet("GetApparelsByName/{name}")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ApparelDTO>>> GetApparelsByName(string name)
         {
             var apparels = await _apparelService.GetApparelsByName(name);
@@ -33,6 +38,7 @@ namespace CatalogManagement.Controllers
         }
 
         [HttpGet("GetApparelById/{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<ApparelDTO>> GetApparelById(int id)
         {
             if (await _apparelService.GetApparelById(id) == null)
@@ -44,6 +50,7 @@ namespace CatalogManagement.Controllers
         }
 
         [HttpGet("GetApparelsByCategoryName/{name}")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ApparelDTO>>> GetApparelsByCategoryName(string name)
         {
             var apparels = await _apparelService.GetApparelsByCategoryName(name);

@@ -1,12 +1,15 @@
 ﻿using Application.DTOs;
 using Application.Requests;
 using Application.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CategoryController : Controller
     {
         public readonly CategoryService categoryService;
@@ -17,6 +20,7 @@ namespace CatalogManagement.Controllers
         }
 
         [HttpGet("GetCategories")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
         {
             var categories = await categoryService.GetCategories();

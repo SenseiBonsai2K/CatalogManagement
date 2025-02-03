@@ -10,20 +10,6 @@ namespace Application.Requests
     public class UpdateUserRequest
     {
         public int Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public User.UserRole Role { get; set; }
-
-        public User ToEntity()
-        {
-            return new User
-            {
-                Username = this.Username,
-                Email = this.Email,
-                Password = this.Password,
-                Role = this.Role
-            };
-        }
+        public AddUserRequest AddUserRequest { get; set; }
     }
 }

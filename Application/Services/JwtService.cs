@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class TokenService
+    public class JwtService
     {
         private readonly Jwt jwt;
 
-        public TokenService(IOptions<Jwt> jwt)
+        public JwtService(IOptions<Jwt> jwt)
         {
             this.jwt = jwt.Value;
         }
@@ -31,16 +31,16 @@ namespace Application.Services
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var securityToken = new JwtSecurityToken(
+
+            var token = new JwtSecurityToken(
                 issuer: jwt.Issuer,
-                audience: null,
+                audience: jwt.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(jwt.ExpiryMinutes),
                 signingCredentials: creds
             );
 
-            var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
-            return token;
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

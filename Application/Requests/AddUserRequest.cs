@@ -9,7 +9,7 @@ namespace Application.Requests
 {
     public class AddUserRequest
     {
-        public string UserName { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
 
@@ -17,7 +17,7 @@ namespace Application.Requests
         {
             return new User
             {
-                Username = this.UserName,
+                Username = this.Username,
                 Email = this.Email,
                 Password = this.Password,
                 Role = User.UserRole.User

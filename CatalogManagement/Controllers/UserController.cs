@@ -1,9 +1,11 @@
 ﻿using Application.DTOs;
 using Application.Requests;
+using Application.Responses;
 using Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CatalogManagement.Controllers
 {
@@ -70,7 +72,7 @@ namespace CatalogManagement.Controllers
             {
                 return BadRequest(e.Message);
             }
-            return Ok(new { message = "Account Updated", username = newUser.Username, email = newUser.Email, password = newUser.Password });
+            return Ok(new { message = "Account Updated", username = newUser.Username, email = newUser.Email });
         }
 
         [HttpPost("Login")]
@@ -90,8 +92,14 @@ namespace CatalogManagement.Controllers
             };
 
             var token = await JwtService.CreateToken(createTokenRequest);
+            var loginResponse = new LoginResponseModel
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Token = token,
+            };
 
-            return Ok(new {token});
+            return Ok(loginResponse);
         }
     }
 }

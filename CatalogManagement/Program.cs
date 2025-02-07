@@ -40,11 +40,10 @@ builder.Services.AddAuthentication(options => {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
         }; 
     });
@@ -58,7 +57,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins("http://localhost:4200", "http://localhost:5197/api")
             .AllowAnyMethod()
             .AllowAnyHeader());
 });

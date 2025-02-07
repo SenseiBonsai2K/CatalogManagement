@@ -20,7 +20,6 @@ namespace Application.Services
         {
             this.jwt = jwt.Value;
         }
-
         public async Task<string> CreateToken(CreateTokenRequest CreateTokenRequest)
         {
             List<Claim> claims = new List<Claim> {
@@ -34,9 +33,9 @@ namespace Application.Services
 
             var token = new JwtSecurityToken(
                 issuer: jwt.Issuer,
-                audience: jwt.Audience,
+                audience: null,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(jwt.ExpiryMinutes),
+                expires: DateTime.UtcNow.AddMinutes(jwt.ExpiryMinutes),
                 signingCredentials: creds
             );
 

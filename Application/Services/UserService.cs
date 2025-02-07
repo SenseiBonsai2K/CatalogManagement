@@ -82,14 +82,13 @@ namespace Application.Services
                 throw new InvalidOperationException("This EMAIL is ALREADY in USE.");
             }
 
-            if (userToUpdate.Password != user.Password)
-            {
-                user.Password = passwordService.HashPassword(user.Password);
-            }
-
             userToUpdate.Username = !string.IsNullOrEmpty(user.Username) ? user.Username : userToUpdate.Username;
             userToUpdate.Email = !string.IsNullOrEmpty(user.Email) ? user.Email : userToUpdate.Email;
-            userToUpdate.Password = !string.IsNullOrEmpty(user.Password) ? passwordService.HashPassword(user.Password) : userToUpdate.Password;
+
+            if (!string.IsNullOrEmpty(user.Password))
+            {
+                userToUpdate.Password = passwordService.HashPassword(user.Password);
+            }
 
             await _userRepository.UpdateAsync(userToUpdate);
             await _userRepository.SaveAsync();

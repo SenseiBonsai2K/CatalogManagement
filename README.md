@@ -85,13 +85,15 @@ Ogni API utilizza un Request Model che rappresenta la struttura dei dati inviati
 - **tokenService** compie tutte le operazioni necessarie sul token che viene inviato dal backend al frontend in fase di login, lo decodifica, ne controlla la scadenza e ne fornisce i metodi per essere richiamato.
 
 # Sicurezza
+## CORS - Cross-Origin Resource Sharing
+Il **CORS** è stato implementato per garantire la sicurezza delle rotte nel backend, permettendo solo a domini autorizzati di accedere alle risorse del server. Questo è stato fatto configurando le politiche CORS nel middleware dell'applicazione e autorizzando specificamente i domini del frontend e del backend.
+
 
 ## Protezione da SQL Injection
 **Entity Framework Core** è un ORM (Object-Relational Mapper) che mappa le entità del dominio a tabelle del database e consente di interagire con il database utilizzando oggetti C#. Una delle caratteristiche principali di **Entity Framework Core** è la protezione automatica contro **SQL Injection**.
 **Entity Framework Core** utilizza query SQL parametrizzate per prevenire **SQL Injection**. Quando si eseguono query utilizzando **Entity Framework Core**, i parametri delle query vengono automaticamente convertiti in parametri SQL, impedendo l'inserimento di codice SQL malevolo.
 
 ### Esempio di Query Parametrizzata
-
 Consideriamo un esempio in cui si cerca un utente per email:
 
 ```csharp
@@ -104,7 +106,6 @@ public User GetUserByEmail(string email)
 In questo esempio, `email` è un parametro passato alla query. **Entity Framework Core** genera una query SQL parametrizzata, che assicura che il valore di `email` venga trattato come un parametro e non come parte del codice SQL.
 
 ### Query Generata da Entity Framework Core
-
 La query generata da **Entity Framework Core** potrebbe apparire simile a questa:
 
 ```bash
@@ -141,10 +142,15 @@ public bool VerifyPassword(string password, string hashedPassword)
 }
 ```
 
-Autenticazione tramite JWT
-Il JWT è la quarta e ultima entità presente nel backend, è compota dalla key, dall'Issuer, da un Audience e da ExpiryMinutes che indica l durata del token.
+## Autenticazione tramite JWT - JSON Web Token
+Il **JWT** è la quarta e ultima entità presente nel backend, è composta dalla `key`, dall'`Issuer`, da un `Audience` e da `ExpiryMinutes` che indica la durata del token.
 
+Quando l'utente effettua il login, dal frontend viene inviata una richiesta `POST` al backend. Il backend verifica le credenziali e, se corrette, viene richiamato il metodo `CreateToken` del **JwtService** che crea il token. Questo token viene incluso in un oggetto `LoginResponseModel` che viene restituito come risposta **JSON** al frontend.
 
+Il payload del token contiene l'`id`, l'`username` e l'`email` dell'utente che ha effettuato il login.
 
+Nel frontend, il **JWT** viene impostato come **Item** nel `LocalStorage` e l'interceptor intercetta ogni richiesta **Http** aggiungendo nell'header il token, permettendo così l'autenticazione automatica dell'utente fino al logout o alla scadenza del token.
 
+Se l'utente non è autenticato, non potrà effettuare tutte quelle operazioni che nel backend richiedono l'autorizzazione, come, nel caso di questo progetto, l'`UpdateUser`.
 
+Nel frontend, le rotte protette dal **Guard** necessitano dell'autenticazione, altrimenti non sono raggiungibili.

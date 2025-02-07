@@ -70,7 +70,7 @@ namespace CatalogManagement.Controllers
             {
                 return BadRequest(e.Message);
             }
-            return Ok("Account " + newUser.Username + " Updated");
+            return Ok(new { message = "Account Updated", username = newUser.Username, email = newUser.Email, password = newUser.Password });
         }
 
         [HttpPost("Login")]

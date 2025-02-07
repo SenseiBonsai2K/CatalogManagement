@@ -84,12 +84,10 @@ Ogni API utilizza un Request Model che rappresenta la struttura dei dati inviati
 - **apparelsService** utilizza le API `GetApparels`, `GetApparelById`, `GetApparelsByCategoryName`, `GetApparelsByName`
 - **tokenService** compie tutte le operazioni necessarie sul token che viene inviato dal backend al frontend in fase di login, lo decodifica, ne controlla la scadenza e ne fornisce i metodi per essere richiamato.
 
-# Protezione da SQL Injection e Sicurezza delle Password
+# Sicurezza
 
 ## Protezione da SQL Injection
-
 **Entity Framework Core** è un ORM (Object-Relational Mapper) che mappa le entità del dominio a tabelle del database e consente di interagire con il database utilizzando oggetti C#. Una delle caratteristiche principali di **Entity Framework Core** è la protezione automatica contro **SQL Injection**.
-
 **Entity Framework Core** utilizza query SQL parametrizzate per prevenire **SQL Injection**. Quando si eseguono query utilizzando **Entity Framework Core**, i parametri delle query vengono automaticamente convertiti in parametri SQL, impedendo l'inserimento di codice SQL malevolo.
 
 ### Esempio di Query Parametrizzata
@@ -116,9 +114,7 @@ SELECT * FROM Users WHERE Email = @p0
 Dove `@p0` è un parametro che contiene il valore di `email`. Questo approccio impedisce che un attaccante possa inserire codice SQL malevolo nel parametro `email`.
 
 ## Sicurezza delle Password
-
 Ho gestito la sicurezza della password utilizzando l'algoritmo **BCrypt** (che fornisce un *salt* in autonomia), combinato con un *pepper*.
-
 In fase di registrazione, l'utente inserisce la password che desidera. Questa password, tramite l'utilizzo di un *pepper* e di un *salt*, viene *hashata* 12 volte (workfactor = 12).
 
 ### Funzione per Hashare la Password
@@ -133,7 +129,6 @@ public string HashPassword(string password)
 ```
 
 Una volta *hashata*, la password viene salvata nel database evitando quindi di salvare le password in chiaro.
-
 In fase di login, l'utente inserisce la propria password e viene richiamato il metodo `Verify` di **BCrypt**. **BCrypt** estrae il *salt* dalla password *hashata*, combina il *salt*, il *pepper* e la password fornita, e verifica se corrisponde alla stringa *hashata*.
 
 ### Funzione per Verificare la Password
